@@ -93,6 +93,7 @@ class InvoiceController extends Controller
             'taxSummary',
             'customer',
             'quotation',
+            'proforma',
         ]);
 
         return view('invoices.show', compact('invoice'));
@@ -167,14 +168,14 @@ class InvoiceController extends Controller
                     $needed = (int) round((float) $item->quantity);
                     if (abs((float) $item->quantity - $needed) > 0.0001) {
                         throw ValidationException::withMessages([
-                            'serials' => $item->description.' must have a whole-number quantity when serials are tracked.',
+                            'serials' => $item->label().' must have a whole-number quantity when serials are tracked.',
                         ]);
                     }
 
                     $ids = array_values(array_filter((array) ($selected[$item->id] ?? [])));
                     if (count($ids) !== $needed) {
                         throw ValidationException::withMessages([
-                            'serials' => 'Select '.$needed.' in-stock serial(s) for '.$item->description.'.',
+                            'serials' => 'Select '.$needed.' in-stock serial(s) for '.$item->label().'.',
                         ]);
                     }
 
@@ -209,7 +210,7 @@ class InvoiceController extends Controller
 
                         if ($serials->count() !== count($ids)) {
                             throw ValidationException::withMessages([
-                                'serials' => 'One or more serials for '.$item->description.' are no longer in stock.',
+                                'serials' => 'One or more serials for '.$item->label().' are no longer in stock.',
                             ]);
                         }
 
@@ -349,7 +350,7 @@ class InvoiceController extends Controller
 
     public function pdf(Invoice $invoice): Response
     {
-        $invoice->load(['items.serials', 'charges', 'taxSummary', 'customer']);
+        $invoice->load(['items.serials', 'items.product', 'charges', 'taxSummary', 'customer']);
         $company = $this->companyProfile()?->loadMissing('state');
         $bank = BankAccount::where('is_default', true)->first()
             ?? BankAccount::where('is_active', true)->first();
@@ -360,7 +361,7 @@ class InvoiceController extends Controller
             'bank' => $bank,
         ])->setPaper('a4')->setOptions([
             'defaultFont' => 'DejaVu Sans',
-            'dpi' => 110,
+            'dpi' => 96,
             'isHtml5ParserEnabled' => true,
             'isFontSubsettingEnabled' => true,
         ]);
@@ -433,6 +434,7 @@ class InvoiceController extends Controller
                 'invoice_date' => $data['invoice_date'],
                 'financial_year_id' => FinancialYear::where('is_current', true)->value('id'),
                 'quotation_id' => $data['quotation_id'] ?? $invoice?->quotation_id,
+                'proforma_id' => $data['proforma_id'] ?? $invoice?->proforma_id,
                 'customer_id' => $customer->id,
                 'buyer_name' => $customer->trade_name ?: $customer->legal_name,
                 'buyer_address' => $context['billing_address'],
@@ -497,6 +499,8 @@ class InvoiceController extends Controller
                 $invoice->items()->create([
                     'sr_no' => $index + 1,
                     'product_id' => $item['product_id'],
+                    'item_code' => $item['item_code'] ?? null,
+                    'product_name' => $item['product_name'] ?? null,
                     'description' => $item['description'],
                     'secondary_description' => $item['secondary_description'],
                     'hsn_sac' => $item['hsn_sac'],

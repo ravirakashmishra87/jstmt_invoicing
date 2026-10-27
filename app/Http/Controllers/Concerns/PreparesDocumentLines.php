@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\State;
 use App\Services\TaxCalculationService;
+use App\Support\RichText;
 use Illuminate\Validation\ValidationException;
 
 trait PreparesDocumentLines
@@ -45,7 +46,7 @@ trait PreparesDocumentLines
             }
 
             $productId = $row['product_id'] ?? null;
-            $description = trim((string) ($row['description'] ?? ''));
+            $description = RichText::plain((string) ($row['description'] ?? ''));
             $qtyRaw = $row['quantity'] ?? null;
             $rateRaw = $row['rate'] ?? null;
             $blank = ($productId === null || $productId === '')
@@ -101,15 +102,20 @@ trait PreparesDocumentLines
             }
 
             $hsn = $product?->hsnSac?->code ?: 'NA';
-            $name = $product?->name ?: $description;
+            $name = $product?->name ?: ($description !== '' ? $description : 'Item');
+            $itemCode = $product?->sku;
+            $lineDescription = $description !== ''
+                ? $description
+                : RichText::plain((string) ($product?->description ?? ''));
             $postedUom = trim((string) ($row['uom'] ?? ''));
             $uom = $postedUom !== '' ? $postedUom : ($product?->uom?->code);
 
             $preparedItems[] = [
                 'product_id' => $product?->id,
+                'item_code' => $itemCode,
                 'product_name' => $name,
                 'model_number' => $product?->model_number,
-                'description' => $description !== '' ? $description : ($product?->description ?: $name),
+                'description' => $lineDescription,
                 'secondary_description' => $product?->model_number,
                 'hsn_sac' => $hsn === 'NA' ? null : $hsn,
                 'uom' => $uom,

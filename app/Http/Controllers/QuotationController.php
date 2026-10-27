@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\PreparesDocumentLines;
+use App\Models\BankAccount;
 use App\Models\ChargeType;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\PaymentTerm;
 use App\Models\Product;
+use App\Models\Proforma;
 use App\Models\Quotation;
 use App\Models\State;
 use App\Models\TermsTemplate;
@@ -16,6 +18,7 @@ use App\Services\AmountInWords;
 use App\Services\DocumentNumberService;
 use App\Services\TaxCalculationService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +86,7 @@ class QuotationController extends Controller
             'quotation' => $quotation,
             'amountInWords' => AmountInWords::convert($quotation->grand_total),
             'hasInvoice' => Invoice::where('quotation_id', $quotation->id)->where('status', '!=', 'cancelled')->exists(),
+            'hasProforma' => Proforma::where('quotation_id', $quotation->id)->whereNotIn('status', ['cancelled'])->exists(),
         ]);
     }
 
@@ -179,6 +183,62 @@ class QuotationController extends Controller
             ->with('success', 'Quotation duplicated as '.$copy->quotation_number.'.');
     }
 
+    public function convertToProforma(Quotation $quotation, TaxCalculationService $tax, DocumentNumberService $numbers): RedirectResponse
+    {
+        if (in_array($quotation->status, ['rejected', 'expired'], true)) {
+            return back()->with('error', 'Rejected or expired quotations cannot be converted.');
+        }
+
+        $existing = Proforma::query()
+            ->where('quotation_id', $quotation->id)
+            ->whereNotIn('status', ['cancelled'])
+            ->first();
+
+        if ($existing) {
+            return redirect()
+                ->route('proformas.show', $existing)
+                ->with('warning', 'This quotation is already linked to proforma '.$existing->proforma_number.'.');
+        }
+
+        $quotation->load(['items', 'charges', 'customer']);
+
+        $payload = [
+            'customer_id' => $quotation->customer_id,
+            'proforma_date' => now()->toDateString(),
+            'place_of_supply_code' => $quotation->place_of_supply_code,
+            'payment_term_id' => $quotation->payment_term_id,
+            'quotation_id' => $quotation->id,
+            'reference_no' => $quotation->quotation_number,
+            'reference_date' => optional($quotation->quotation_date)->toDateString(),
+            'notes' => trim(($quotation->subject ? $quotation->subject."\n" : '').($quotation->notes ?? '')),
+            'ship_same' => 1,
+            'items' => $quotation->items->map(fn ($item) => [
+                'product_id' => $item->product_id,
+                'description' => $item->description,
+                'quantity' => $item->quantity,
+                'uom' => $item->uom,
+                'rate' => $item->rate,
+                'discount_percent' => $item->discount_percent,
+                'tax_rate' => $item->tax_rate,
+            ])->all(),
+            'charges' => $quotation->charges->map(fn ($charge) => [
+                'charge_type_id' => $charge->charge_type_id,
+                'name' => $charge->name,
+                'amount' => $charge->amount,
+                'tax_rate' => $charge->tax_rate,
+            ])->all(),
+        ];
+
+        $request = Request::create('/proformas', 'POST', $payload);
+        $request->setUserResolver(fn () => auth()->user());
+
+        $proforma = app(ProformaController::class)->persist($request, $tax, $numbers, null, true);
+
+        return redirect()
+            ->route('proformas.show', $proforma)
+            ->with('success', 'Proforma '.$proforma->proforma_number.' created from quotation '.$quotation->quotation_number.'.');
+    }
+
     public function convertToInvoice(Quotation $quotation): RedirectResponse
     {
         if (in_array($quotation->status, ['rejected', 'expired'], true)) {
@@ -208,7 +268,7 @@ class QuotationController extends Controller
             'notes' => trim(($quotation->subject ? $quotation->subject."\n" : '').($quotation->notes ?? '')),
             'items' => $quotation->items->map(fn ($item) => [
                 'product_id' => $item->product_id,
-                'description' => $item->description ?: $item->product_name,
+                'description' => $item->description,
                 'quantity' => $item->quantity,
                 'uom' => $item->uom,
                 'rate' => $item->rate,
@@ -257,8 +317,8 @@ class QuotationController extends Controller
             'salesperson',
         ]);
         $company = $this->companyProfile()?->loadMissing('state');
-        $bank = \App\Models\BankAccount::where('is_default', true)->first()
-            ?? \App\Models\BankAccount::where('is_active', true)->first();
+        $bank = BankAccount::where('is_default', true)->first()
+            ?? BankAccount::where('is_active', true)->first();
 
         $specGroups = [];
         $components = [];
@@ -392,7 +452,7 @@ class QuotationController extends Controller
         $validUntil = $data['valid_until'] ?? null;
         if (! $validUntil) {
             $days = (int) ($this->companyProfile()?->quotation_validity_days ?? 7);
-            $validUntil = \Carbon\Carbon::parse($data['quotation_date'])->addDays($days)->toDateString();
+            $validUntil = Carbon::parse($data['quotation_date'])->addDays($days)->toDateString();
         }
 
         return DB::transaction(function () use ($quotation, $data, $customer, $context, $prepared, $totals, $validUntil, $numbers, $request) {

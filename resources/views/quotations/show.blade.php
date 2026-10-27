@@ -2,6 +2,13 @@
 @section('title', $quotation->quotation_number)
 @section('page', $quotation->quotation_number)
 @section('subtitle', $quotation->customer_name)
+@push('styles')
+<style>
+    .item-desc p { margin: 0 0 .2rem; }
+    .item-desc ul, .item-desc ol { margin: .15rem 0 .15rem 1.1rem; padding: 0; }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex flex-wrap gap-2 mb-3">
     @include('partials.back-to-list', ['url' => route('quotations.index'), 'label' => 'Back to quotations'])
@@ -14,6 +21,9 @@
     @include('partials.email-document', ['type' => 'quotation', 'id' => $quotation->id])
     @if(auth()->user()->hasPermission('quotations.create'))
         <form method="POST" action="{{ route('quotations.duplicate', $quotation) }}">@csrf<button class="btn btn-outline-secondary">Duplicate</button></form>
+    @endif
+    @if(auth()->user()->hasPermission('proformas.create') && ! $hasProforma && ! in_array($quotation->status, ['rejected', 'expired']))
+        <form method="POST" action="{{ route('quotations.convert-proforma', $quotation) }}">@csrf<button class="btn btn-outline-primary">Convert to proforma</button></form>
     @endif
     @if(auth()->user()->hasPermission('invoices.create') && ! $hasInvoice && ! in_array($quotation->status, ['rejected', 'expired']))
         <form method="POST" action="{{ route('quotations.convert', $quotation) }}">@csrf<button class="btn btn-primary">Convert to invoice</button></form>
@@ -53,7 +63,13 @@
             @foreach($quotation->items as $item)
                 <tr>
                     <td>{{ $item->sr_no }}</td>
-                    <td>{{ $item->product_name }}<div class="small text-muted">{{ $item->description }}</div></td>
+                    <td>
+                        <div class="fw-semibold">{{ $item->product_name }}</div>
+                        @if($item->model_number)<div class="small text-muted">Model: {{ $item->model_number }}</div>@endif
+                        @if($item->description)
+                            <div class="small text-muted item-desc mt-1">{!! nl2br(e(\App\Support\RichText::plain($item->description))) !!}</div>
+                        @endif
+                    </td>
                     <td>{{ $item->hsn_sac }}</td>
                     <td class="text-end">{{ \App\Helpers\IndianFormat::number($item->quantity, 0) }} {{ $item->uom }}</td>
                     <td class="text-end">{{ \App\Helpers\IndianFormat::money($item->rate) }}</td>

@@ -230,6 +230,7 @@
             'customer_name' => 'Acme Engineering',
             'document_number' => match ($template->document_type) {
                 'quotation' => 'QT-2026-001',
+                'proforma' => 'PI/26-27/001',
                 'invoice' => 'INV-2026-001',
                 'receipt' => 'RCP-2026-001',
                 default => '',
@@ -242,7 +243,7 @@
         ];
         $sampleBody = $template->renderBody($sampleVars);
         $sampleMeta = match ($template->document_type) {
-            'quotation', 'invoice', 'receipt' => [
+            'quotation', 'proforma', 'invoice', 'receipt' => [
                 'Number' => $sampleVars['document_number'],
                 'Date' => $sampleVars['document_date'],
                 'Amount' => $sampleVars['amount'],
@@ -296,7 +297,7 @@
                     'previewTypeLabel' => $typeLabel,
                     'previewBody' => $sampleBody,
                     'previewMeta' => $sampleMeta,
-                    'previewAttachment' => in_array($template->document_type, ['quotation', 'invoice', 'receipt'], true)
+                    'previewAttachment' => in_array($template->document_type, ['quotation', 'proforma', 'invoice', 'receipt'], true)
                         ? strtoupper($template->document_type).'-sample.pdf'
                         : null,
                 ])

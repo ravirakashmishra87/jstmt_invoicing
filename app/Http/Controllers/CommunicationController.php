@@ -6,6 +6,7 @@ use App\Models\CompanyProfile;
 use App\Models\EmailLog;
 use App\Models\EmailTemplate;
 use App\Models\Invoice;
+use App\Models\Proforma;
 use App\Models\Quotation;
 use App\Models\Receipt;
 use App\Models\SmtpSetting;
@@ -48,7 +49,7 @@ class CommunicationController extends Controller
     public function compose(Request $request, DocumentMailService $mail): View
     {
         $type = (string) $request->query('type', 'general');
-        if (! in_array($type, ['general', 'quotation', 'invoice', 'receipt'], true)) {
+        if (! in_array($type, ['general', 'quotation', 'proforma', 'invoice', 'receipt'], true)) {
             $type = 'general';
         }
 
@@ -65,6 +66,7 @@ class CommunicationController extends Controller
             'companyName' => $company?->trade_name ?: ($company?->name ?: 'JST Machine Tools'),
             'templates' => EmailTemplate::where('is_active', true)->orderBy('name')->get(),
             'quotations' => Quotation::orderByDesc('id')->limit(100)->get(['id', 'quotation_number', 'customer_name', 'grand_total']),
+            'proformas' => Proforma::orderByDesc('id')->limit(100)->get(['id', 'proforma_number', 'buyer_name', 'grand_total', 'status']),
             'invoices' => Invoice::orderByDesc('id')->limit(100)->get(['id', 'invoice_number', 'buyer_name', 'grand_total', 'status']),
             'receipts' => Receipt::with('customer:id,legal_name')->orderByDesc('id')->limit(100)->get(['id', 'receipt_number', 'customer_id', 'amount']),
             'smtpReady' => SmtpSetting::current()->isConfigured(),
@@ -74,7 +76,7 @@ class CommunicationController extends Controller
     public function preview(Request $request, DocumentMailService $mail): JsonResponse
     {
         $data = $request->validate([
-            'type' => ['required', 'in:general,quotation,invoice,receipt'],
+            'type' => ['required', 'in:general,quotation,proforma,invoice,receipt'],
             'document_id' => ['nullable', 'integer'],
             'template_id' => ['nullable', 'exists:email_templates,id'],
             'message' => ['nullable', 'string'],
@@ -103,7 +105,7 @@ class CommunicationController extends Controller
     public function send(Request $request, DocumentMailService $mail): RedirectResponse
     {
         $data = $request->validate([
-            'document_type' => ['required', 'in:general,quotation,invoice,receipt'],
+            'document_type' => ['required', 'in:general,quotation,proforma,invoice,receipt'],
             'document_id' => ['nullable', 'integer'],
             'to_email' => ['required', 'email', 'max:255'],
             'cc_email' => ['nullable', 'email', 'max:255'],
@@ -111,7 +113,7 @@ class CommunicationController extends Controller
             'body' => ['required', 'string'],
         ]);
 
-        if (in_array($data['document_type'], ['quotation', 'invoice', 'receipt'], true) && empty($data['document_id'])) {
+        if (in_array($data['document_type'], ['quotation', 'proforma', 'invoice', 'receipt'], true) && empty($data['document_id'])) {
             return back()->withInput()->with('error', 'Select a document to attach.');
         }
 
@@ -135,7 +137,7 @@ class CommunicationController extends Controller
 
     public function sendDocument(Request $request, string $type, int $id, DocumentMailService $mail): RedirectResponse
     {
-        if (! in_array($type, ['quotation', 'invoice', 'receipt'], true)) {
+        if (! in_array($type, ['quotation', 'proforma', 'invoice', 'receipt'], true)) {
             return back()->with('error', 'Unsupported document type.');
         }
 

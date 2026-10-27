@@ -60,4 +60,9 @@ class Quotation extends Model
     {
         return $this->hasMany(QuotationCharge::class);
     }
+
+    public function proformas(): HasMany
+    {
+        return $this->hasMany(Proforma::class);
+    }
 }

@@ -25,6 +25,13 @@ class DefaultEmailTemplates
                 'body' => "Dear {{customer_name}},\n\nThank you for your enquiry. Please find attached our formal quotation {{document_number}} dated {{document_date}}.\n\n{{document_subject}}\n\nQuoted value: {{amount}}\n\nWe would be pleased to discuss any detail and look forward to your confirmation.\n\nWith regards,\n{{company_name}}",
             ],
             [
+                'code' => 'proforma',
+                'name' => 'Proforma invoice delivery',
+                'document_type' => 'proforma',
+                'subject' => 'Proforma invoice {{document_number}} — {{company_name}}',
+                'body' => "Dear {{customer_name}},\n\nPlease find attached proforma invoice {{document_number}} dated {{document_date}} for {{amount}}.\n\nThis is a commercial proforma for your reference and advance arrangement. A tax invoice will follow as per dispatch / billing.\n\nWith regards,\n{{company_name}}",
+            ],
+            [
                 'code' => 'invoice',
                 'name' => 'Invoice delivery',
                 'document_type' => 'invoice',
@@ -45,6 +52,7 @@ class DefaultEmailTemplates
     {
         return match ($documentType) {
             'quotation' => 'Quotation',
+            'proforma' => 'Proforma Invoice',
             'invoice' => 'Tax Invoice',
             'receipt' => 'Payment Receipt',
             default => 'Correspondence',

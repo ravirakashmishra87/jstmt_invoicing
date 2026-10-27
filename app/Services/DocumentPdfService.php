@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\BankAccount;
 use App\Models\CompanyProfile;
 use App\Models\Invoice;
+use App\Models\Proforma;
 use App\Models\Quotation;
 use App\Models\Receipt;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -19,6 +20,7 @@ class DocumentPdfService
     {
         return match ($type) {
             'quotation' => $this->quotation(Quotation::findOrFail($id)),
+            'proforma' => $this->proforma(Proforma::findOrFail($id)),
             'invoice' => $this->invoice(Invoice::findOrFail($id)),
             'receipt' => $this->receipt(Receipt::findOrFail($id)),
             default => throw new RuntimeException('Unsupported document type.'),
@@ -106,9 +108,36 @@ class DocumentPdfService
     /**
      * @return array{binary: string, filename: string}
      */
+    public function proforma(Proforma $proforma): array
+    {
+        $proforma->load(['items.product', 'charges', 'taxSummary', 'customer']);
+        $company = CompanyProfile::with('state')->first();
+        $bank = BankAccount::where('is_default', true)->first()
+            ?? BankAccount::where('is_active', true)->first();
+
+        $pdf = Pdf::loadView('pdf.proforma', [
+            'proforma' => $proforma,
+            'company' => $company,
+            'bank' => $bank,
+        ])->setPaper('a4')->setOptions([
+            'defaultFont' => 'DejaVu Sans',
+            'dpi' => 96,
+            'isHtml5ParserEnabled' => true,
+            'isFontSubsettingEnabled' => true,
+        ]);
+
+        return [
+            'binary' => $pdf->output(),
+            'filename' => preg_replace('/[\/\\\\]+/', '-', $proforma->proforma_number).'.pdf',
+        ];
+    }
+
+    /**
+     * @return array{binary: string, filename: string}
+     */
     public function invoice(Invoice $invoice): array
     {
-        $invoice->load(['items.serials', 'charges', 'taxSummary', 'customer']);
+        $invoice->load(['items.serials', 'items.product', 'charges', 'taxSummary', 'customer']);
         $company = CompanyProfile::with('state')->first();
         $bank = BankAccount::where('is_default', true)->first()
             ?? BankAccount::where('is_active', true)->first();
@@ -119,7 +148,7 @@ class DocumentPdfService
             'bank' => $bank,
         ])->setPaper('a4')->setOptions([
             'defaultFont' => 'DejaVu Sans',
-            'dpi' => 110,
+            'dpi' => 96,
             'isHtml5ParserEnabled' => true,
             'isFontSubsettingEnabled' => true,
         ]);

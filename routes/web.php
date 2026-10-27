@@ -8,6 +8,7 @@ use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProformaController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\ReportController;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
             'dashboard.view' => 'dashboard',
             'customers.view' => 'customers.index',
             'quotations.view' => 'quotations.index',
+            'proformas.view' => 'proformas.index',
             'invoices.view' => 'invoices.index',
             'receipts.view' => 'receipts.index',
             'products.view' => 'products.index',
@@ -119,6 +121,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/quotations/{quotation}', [QuotationController::class, 'update'])->whereNumber('quotation')->name('quotations.update');
         Route::post('/quotations/{quotation}/status', [QuotationController::class, 'updateStatus'])->whereNumber('quotation')->name('quotations.status');
     });
+    Route::post('/quotations/{quotation}/convert-proforma', [QuotationController::class, 'convertToProforma'])
+        ->middleware('permission:proformas.create')
+        ->whereNumber('quotation')
+        ->name('quotations.convert-proforma');
     Route::post('/quotations/{quotation}/convert', [QuotationController::class, 'convertToInvoice'])
         ->middleware('permission:invoices.create')
         ->whereNumber('quotation')
@@ -130,6 +136,29 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:quotations.view')->group(function () {
         Route::get('/quotations', [QuotationController::class, 'index'])->name('quotations.index');
         Route::get('/quotations/{quotation}', [QuotationController::class, 'show'])->whereNumber('quotation')->name('quotations.show');
+    });
+
+    Route::middleware('permission:proformas.create')->group(function () {
+        Route::get('/proformas/create', [ProformaController::class, 'create'])->name('proformas.create');
+        Route::post('/proformas', [ProformaController::class, 'store'])->name('proformas.store');
+    });
+    Route::middleware('permission:proformas.edit')->group(function () {
+        Route::get('/proformas/{proforma}/edit', [ProformaController::class, 'edit'])->whereNumber('proforma')->name('proformas.edit');
+        Route::put('/proformas/{proforma}', [ProformaController::class, 'update'])->whereNumber('proforma')->name('proformas.update');
+        Route::post('/proformas/{proforma}/sent', [ProformaController::class, 'markSent'])->whereNumber('proforma')->name('proformas.sent');
+        Route::post('/proformas/{proforma}/cancel', [ProformaController::class, 'cancel'])->whereNumber('proforma')->name('proformas.cancel');
+    });
+    Route::post('/proformas/{proforma}/convert', [ProformaController::class, 'convertToInvoice'])
+        ->middleware('permission:invoices.create')
+        ->whereNumber('proforma')
+        ->name('proformas.convert');
+    Route::get('/proformas/{proforma}/pdf', [ProformaController::class, 'pdf'])
+        ->middleware('permission:proformas.print')
+        ->whereNumber('proforma')
+        ->name('proformas.pdf');
+    Route::middleware('permission:proformas.view')->group(function () {
+        Route::get('/proformas', [ProformaController::class, 'index'])->name('proformas.index');
+        Route::get('/proformas/{proforma}', [ProformaController::class, 'show'])->whereNumber('proforma')->name('proformas.show');
     });
 
     Route::middleware('permission:invoices.create')->group(function () {
@@ -197,7 +226,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/communication/preview', [CommunicationController::class, 'preview'])->name('communication.preview');
         Route::post('/communication/send', [CommunicationController::class, 'send'])->name('communication.send');
         Route::post('/communication/send/{type}/{id}', [CommunicationController::class, 'sendDocument'])
-            ->whereIn('type', ['quotation', 'invoice', 'receipt'])
+            ->whereIn('type', ['quotation', 'proforma', 'invoice', 'receipt'])
             ->whereNumber('id')
             ->name('communication.send-document');
     });

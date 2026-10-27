@@ -5,14 +5,14 @@
     <title>{{ $invoice->invoice_number }}</title>
     @include('pdf._styles')
     <style>
-        /* Invoice-only: larger, higher-contrast type for print readability */
-        body { font-size: 11.5pt; }
-        .box td, .box th { font-size: 11pt; padding: 6px 7px; }
-        .box th { font-size: 10.5pt; }
-        .amount-words { font-size: 11.5pt; line-height: 1.5; }
-        .totals-table td { font-size: 11pt; padding: 4px 0; }
-        .totals-table .strong { font-size: 12pt; }
-        .footer-note { font-size: 10pt; color: #1e293b; }
+        /* Tax invoice: standard commercial print sizes (8pt body) */
+        .amount-words { font-size: 8pt; line-height: 1.35; }
+        .totals-table td { font-size: 8pt; padding: 2px 0; }
+        .totals-table .strong { font-size: 9pt; }
+        .footer-note { font-size: 7pt; color: #4b5563; }
+        .item-desc p { margin: 0 0 2px; }
+        .item-desc ul, .item-desc ol { margin: 2px 0 2px 14px; padding: 0; }
+        .item-desc li { margin: 0 0 1px; }
     </style>
 </head>
 <body>
@@ -87,8 +87,7 @@
             <tr>
                 <td class="center">{{ $item->sr_no }}</td>
                 <td>
-                    {{ $item->description }}
-                    @if($item->secondary_description)<br><span class="muted">{{ $item->secondary_description }}</span>@endif
+                    @include('partials.invoice-item-copy', ['item' => $item, 'showSecondary' => true])
                     @if($item->serials->isNotEmpty())<br><span class="muted">Sr. {{ $item->serials->pluck('serial_number')->implode(', ') }}</span>@endif
                 </td>
                 <td class="center">{{ $item->hsn_sac }}</td>

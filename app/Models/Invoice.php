@@ -13,7 +13,7 @@ class Invoice extends Model
     use Auditable, SoftDeletes;
 
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'financial_year_id', 'quotation_id', 'customer_id',
+        'invoice_number', 'invoice_date', 'financial_year_id', 'quotation_id', 'proforma_id', 'customer_id',
         'buyer_name', 'buyer_address', 'buyer_gstin', 'buyer_state', 'buyer_state_code', 'buyer_contact',
         'consignee_name', 'consignee_address', 'consignee_gstin', 'consignee_state',
         'consignee_state_code', 'consignee_contact', 'place_of_supply', 'place_of_supply_code',
@@ -65,6 +65,11 @@ class Invoice extends Model
     public function quotation(): BelongsTo
     {
         return $this->belongsTo(Quotation::class);
+    }
+
+    public function proforma(): BelongsTo
+    {
+        return $this->belongsTo(Proforma::class);
     }
 
     public function items(): HasMany

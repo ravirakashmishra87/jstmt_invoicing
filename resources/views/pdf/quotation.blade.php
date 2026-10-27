@@ -48,6 +48,8 @@
         .grand td { color: #1e3a8a; font-size: 10pt; }
         .page-break { page-break-before: always; }
         .muted { color: #6b7280; }
+        .item-desc p { margin: 0 0 2px; }
+        .item-desc ul, .item-desc ol { margin: 2px 0 2px 14px; padding: 0; }
     </style>
 </head>
 <body>
@@ -173,7 +175,9 @@
                 <td>
                     <span class="bold" style="font-size:9pt;">{{ $item->product_name }}</span>
                     @if($item->model_number)<div><span class="bold">Model:</span> {{ $item->model_number }}</div>@endif
-                    @if($item->description)<div class="muted" style="font-size:7.5pt;margin-top:2px;">{{ $item->description }}</div>@endif
+                    @if($item->description)
+                        <div class="muted item-desc" style="font-size:7.5pt;margin-top:2px;">{!! nl2br(e(\App\Support\RichText::plain($item->description))) !!}</div>
+                    @endif
                 </td>
                 <td class="center">{{ $item->hsn_sac }}</td>
                 <td class="center bold">{{ \App\Helpers\IndianFormat::number($item->quantity, 0) }} {{ $item->uom ?: 'NOS' }}</td>

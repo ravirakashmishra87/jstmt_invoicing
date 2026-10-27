@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\RichText;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class InvoiceItem extends Model
 {
     protected $fillable = [
-        'invoice_id', 'sr_no', 'product_id', 'description', 'secondary_description', 'hsn_sac',
+        'invoice_id', 'sr_no', 'product_id', 'item_code', 'product_name', 'description', 'secondary_description', 'hsn_sac',
         'quantity', 'uom', 'rate', 'discount_percent', 'discount_amount', 'amount',
         'tax_rate', 'cgst_rate', 'sgst_rate', 'igst_rate', 'cgst_amount', 'sgst_amount',
         'igst_amount', 'tax_amount', 'is_service',
@@ -48,5 +49,11 @@ class InvoiceItem extends Model
     public function serials(): HasMany
     {
         return $this->hasMany(InvoiceItemSerial::class);
+    }
+
+    public function label(): string
+    {
+        return $this->product_name
+            ?: ($this->item_code ?: (RichText::plain($this->description) ?: 'Item'));
     }
 }

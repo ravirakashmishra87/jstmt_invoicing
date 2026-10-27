@@ -8,6 +8,7 @@ use App\Models\CompanyProfile;
 use App\Models\EmailLog;
 use App\Models\EmailTemplate;
 use App\Models\Invoice;
+use App\Models\Proforma;
 use App\Models\Quotation;
 use App\Models\Receipt;
 use App\Models\SmtpSetting;
@@ -139,6 +140,25 @@ class DocumentMailService
             ];
         }
 
+        if ($type === 'proforma') {
+            $doc = Proforma::with('customer')->findOrFail($documentId);
+            $customer = $doc->customer;
+            $base['customer_name'] = $customer->legal_name ?? ($doc->buyer_name ?: 'Sir / Madam');
+            $base['document_number'] = $doc->proforma_number;
+            $base['document_date'] = IndianFormat::date($doc->proforma_date);
+            $base['amount'] = IndianFormat::money($doc->grand_total);
+
+            return [
+                'to' => trim((string) ($customer->email ?? '')),
+                'customer_name' => $base['customer_name'],
+                'document_number' => $doc->proforma_number,
+                'document_date' => $base['document_date'],
+                'amount' => $base['amount'],
+                'document_subject' => null,
+                'vars' => $base,
+            ];
+        }
+
         if ($type === 'invoice') {
             $doc = Invoice::with('customer')->findOrFail($documentId);
             $customer = $doc->customer;
@@ -195,7 +215,7 @@ class DocumentMailService
 
         $attachment = null;
         $attachmentName = null;
-        if (in_array($type, ['quotation', 'invoice', 'receipt'], true) && $documentId) {
+        if (in_array($type, ['quotation', 'proforma', 'invoice', 'receipt'], true) && $documentId) {
             $pdf = $this->pdfs->forType($type, (int) $documentId);
             $attachment = $pdf['binary'];
             $attachmentName = $pdf['filename'];

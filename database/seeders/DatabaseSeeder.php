@@ -26,6 +26,7 @@ use App\Models\Warehouse;
 use App\Services\StockService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
@@ -94,9 +95,9 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function seedAccess(): \Illuminate\Support\Collection
+    private function seedAccess(): Collection
     {
-        $modules = ['dashboard', 'customers', 'suppliers', 'products', 'quotations', 'invoices', 'stock', 'receipts', 'reports', 'communication', 'settings', 'users', 'masters'];
+        $modules = ['dashboard', 'customers', 'suppliers', 'products', 'quotations', 'proformas', 'invoices', 'stock', 'receipts', 'reports', 'communication', 'settings', 'users', 'masters'];
         $actions = ['view', 'create', 'edit', 'delete', 'approve', 'export', 'print'];
 
         foreach ($modules as $module) {
@@ -148,6 +149,7 @@ class DatabaseSeeder extends Seeder
             'dashboard' => ['view'],
             'customers' => ['view', 'create', 'edit', 'print'],
             'quotations' => ['view', 'create', 'edit', 'print'],
+            'proformas' => ['view', 'create', 'edit', 'print'],
             'products' => ['view'],
             'invoices' => ['view', 'create', 'edit', 'print'],
             'communication' => ['view', 'create', 'print'],
@@ -157,6 +159,7 @@ class DatabaseSeeder extends Seeder
         $sync(Role::where('slug', 'accounts')->firstOrFail(), [
             'dashboard' => ['view'],
             'customers' => ['view'],
+            'proformas' => ['view', 'create', 'edit', 'approve', 'print'],
             'invoices' => ['view', 'create', 'edit', 'approve', 'print', 'export'],
             'receipts' => ['view', 'create', 'edit', 'print'],
             'communication' => ['view', 'create', 'print'],
@@ -187,6 +190,7 @@ class DatabaseSeeder extends Seeder
             'suppliers' => ['view', 'print'],
             'products' => ['view', 'print'],
             'quotations' => ['view', 'print'],
+            'proformas' => ['view', 'print'],
             'invoices' => ['view', 'print'],
             'stock' => ['view', 'print'],
             'receipts' => ['view', 'print'],
@@ -285,6 +289,7 @@ class DatabaseSeeder extends Seeder
 
         $series = [
             'quotation' => ['format_pattern' => '{MODELCODE}{SEQ}-{YEAR}', 'separator' => '-', 'zero_padding' => 3, 'reset_rule' => 'calendar_year'],
+            'proforma' => ['format_pattern' => 'PI/{FY}/{SEQ}', 'separator' => '/', 'zero_padding' => 3, 'reset_rule' => 'financial_year'],
             'invoice' => ['format_pattern' => '{FY}/{SEQ}', 'separator' => '/', 'zero_padding' => 3, 'reset_rule' => 'financial_year'],
             'receipt' => ['format_pattern' => 'RCT/{FY}/{SEQ}', 'prefix' => 'RCT', 'separator' => '/', 'zero_padding' => 3, 'reset_rule' => 'financial_year'],
             'stock_adjustment' => ['format_pattern' => 'ADJ/{FY}/{SEQ}', 'prefix' => 'ADJ', 'separator' => '/', 'zero_padding' => 3, 'reset_rule' => 'financial_year'],

@@ -4,8 +4,12 @@
 @section('subtitle', now()->format('l, d M Y'))
 
 @php
-    $hour = (int) now()->format('G');
-    $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+    $hour = (int) now()->timezone(config('app.timezone'))->format('G');
+    $greeting = match (true) {
+        $hour < 12 => 'Good morning',
+        $hour < 17 => 'Good afternoon',
+        default => 'Good evening',
+    };
     $firstName = collect(preg_split('/\s+/', trim(auth()->user()->name ?? 'there')))->first() ?: 'there';
 @endphp
 

@@ -2,6 +2,13 @@
 @section('title', $invoice->invoice_number)
 @section('page', $invoice->invoice_number)
 @section('subtitle', $invoice->buyer_name.' · '.\App\Helpers\IndianFormat::date($invoice->invoice_date))
+@push('styles')
+<style>
+    .item-desc p { margin: 0 0 .2rem; }
+    .item-desc ul, .item-desc ol { margin: .15rem 0 .15rem 1.1rem; padding: 0; }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
     @include('partials.back-to-list', ['url' => route('invoices.index'), 'label' => 'Back to invoices'])
@@ -40,19 +47,19 @@
         <div>{{ $invoice->consignee_address }}</div>
         <div>Place of supply {{ $invoice->place_of_supply }} ({{ $invoice->place_of_supply_code }}) · {{ strtoupper($invoice->tax_type) }}</div>
         @if($invoice->quotation)<div class="small">From quotation {{ $invoice->quotation->quotation_number }}</div>@endif
+        @if($invoice->proforma)<div class="small">From proforma <a href="{{ route('proformas.show', $invoice->proforma) }}">{{ $invoice->proforma->proforma_number }}</a></div>@endif
     </div></div></div>
 </div>
 
 <div class="card mb-3"><div class="table-responsive">
     <table class="table table-sm mb-0">
-        <thead><tr><th>#</th><th>Description</th><th>HSN</th><th class="text-end">Qty</th><th class="text-end">Rate</th><th class="text-end">Amount</th><th class="text-end">Tax</th></tr></thead>
+        <thead><tr><th>#</th><th>Item Description</th><th>HSN</th><th class="text-end">Qty</th><th class="text-end">Rate</th><th class="text-end">Amount</th><th class="text-end">Tax</th></tr></thead>
         <tbody>
             @foreach($invoice->items as $item)
                 <tr>
                     <td>{{ $item->sr_no }}</td>
                     <td>
-                        {{ $item->description }}
-                        @if($item->secondary_description)<div class="small text-muted">{{ $item->secondary_description }}</div>@endif
+                        @include('partials.invoice-item-copy', ['item' => $item, 'showSecondary' => true])
                         @if($item->serials->isNotEmpty())
                             <div class="small">Serial: {{ $item->serials->pluck('serial_number')->implode(', ') }}</div>
                         @endif
@@ -125,7 +132,7 @@
                 @if($item->product && $item->product->track_serial)
                     @php $needed = (int) round((float) $item->quantity); @endphp
                     <div class="mb-3">
-                        <div class="fw-semibold">{{ $item->description }} — select {{ $needed }} serial{{ $needed === 1 ? '' : 's' }}</div>
+                        <div class="fw-semibold">{{ $item->label() }} — select {{ $needed }} serial{{ $needed === 1 ? '' : 's' }}</div>
                         @forelse($item->product->serials as $serial)
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="serials[{{ $item->id }}][]" value="{{ $serial->id }}" id="serial-{{ $item->id }}-{{ $serial->id }}">

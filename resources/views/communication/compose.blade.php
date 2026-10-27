@@ -219,7 +219,7 @@
                     <div class="col-md-4">
                         <label class="form-label">Email type</label>
                         <select name="document_type" id="document_type" class="form-select" required>
-                            @foreach(['general' => 'General email', 'quotation' => 'Quotation', 'invoice' => 'Invoice', 'receipt' => 'Receipt'] as $value => $label)
+                            @foreach(['general' => 'General email', 'quotation' => 'Quotation', 'proforma' => 'Proforma invoice', 'invoice' => 'Invoice', 'receipt' => 'Receipt'] as $value => $label)
                                 <option value="{{ $value }}" @selected(old('document_type', $type) === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
@@ -231,6 +231,11 @@
                             @foreach($quotations as $row)
                                 <option value="{{ $row->id }}" data-type="quotation" @selected((string) old('document_id', $documentId) === (string) $row->id && old('document_type', $type) === 'quotation')">
                                     {{ $row->quotation_number }} — {{ $row->customer_name }}
+                                </option>
+                            @endforeach
+                            @foreach($proformas as $row)
+                                <option value="{{ $row->id }}" data-type="proforma" @selected((string) old('document_id', $documentId) === (string) $row->id && old('document_type', $type) === 'proforma')">
+                                    {{ $row->proforma_number }} — {{ $row->buyer_name }}
                                 </option>
                             @endforeach
                             @foreach($invoices as $row)
@@ -297,12 +302,12 @@
                     'previewTypeLabel' => $preview['type_label'] ?? 'Correspondence',
                     'previewBody' => $preview['body'] ?? '',
                     'previewMeta' => $preview['meta'] ?? [],
-                    'previewAttachment' => in_array(old('document_type', $type), ['quotation', 'invoice', 'receipt'], true)
+                    'previewAttachment' => in_array(old('document_type', $type), ['quotation', 'proforma', 'invoice', 'receipt'], true)
                         ? 'document.pdf'
                         : null,
                 ])
                 <div class="compose-hint mt-3 mb-0">
-                    Recipients receive this branded HTML layout. PDF attachments are added automatically for quotations, invoices, and receipts.
+                    Recipients receive this branded HTML layout. PDF attachments are added automatically for quotations, proformas, invoices, and receipts.
                 </div>
             </div>
         </div>
@@ -351,6 +356,7 @@
     const typeLabels = {
         general: 'Correspondence',
         quotation: 'Quotation',
+        proforma: 'Proforma Invoice',
         invoice: 'Tax Invoice',
         receipt: 'Payment Receipt',
     };

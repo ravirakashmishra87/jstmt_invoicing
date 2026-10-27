@@ -1,54 +1,55 @@
 <style>
     @page { margin: 10mm 10mm 12mm 10mm; }
     body {
-        font-family: DejaVu Sans, sans-serif;
-        font-size: 11pt;
-        line-height: 1.45;
-        color: #0f172a;
-        letter-spacing: 0.01em;
+        font-family: DejaVu Sans, Helvetica, Arial, sans-serif;
+        font-size: 8pt;
+        line-height: 1.35;
+        color: #111827;
     }
     table { width: 100%; border-collapse: collapse; }
     .banner {
         background: #0f2744;
         color: #fff;
         text-align: center;
-        padding: 8px 0;
-        font-size: 15pt;
+        padding: 5px 0;
+        font-size: 12pt;
         font-weight: bold;
-        letter-spacing: 1.2px;
+        letter-spacing: 1px;
     }
     .sub {
         text-align: center;
-        font-size: 10pt;
-        color: #1e293b;
-        margin: 4px 0 8px;
-        font-weight: bold;
+        font-size: 7.5pt;
+        color: #374151;
+        margin: 3px 0 6px;
     }
     .box td, .box th {
-        border: 1px solid #64748b;
-        padding: 5px 6px;
+        border: 1px solid #94a3b8;
+        padding: 3px 4px;
         vertical-align: top;
-        font-size: 10.5pt;
-        line-height: 1.4;
+        font-size: 8pt;
+        line-height: 1.3;
     }
     .box th {
-        background: #e8eef5;
+        background: #eef2f7;
         color: #0f2744;
         font-weight: bold;
-        font-size: 10pt;
+        font-size: 7.5pt;
     }
     .right { text-align: right; }
     .center { text-align: center; }
-    .muted { color: #334155; }
-    .strong { font-weight: bold; color: #0f172a; }
+    .muted { color: #4b5563; }
+    .strong { font-weight: bold; }
     h1 {
-        font-size: 15pt;
-        margin: 0 0 4px;
+        font-size: 11pt;
+        margin: 0 0 2px;
         color: #0f2744;
-        line-height: 1.25;
+        line-height: 1.2;
         font-weight: bold;
     }
-    .flag { background: #b91c1c; color: #fff; text-align: center; font-weight: bold; padding: 5px; font-size: 11pt; }
-    .draft { background: #475569; color: #fff; text-align: center; font-weight: bold; padding: 5px; font-size: 11pt; }
-    .sign { height: 52px; }
+    .flag { background: #b91c1c; color: #fff; text-align: center; font-weight: bold; padding: 3px; font-size: 8pt; }
+    .draft { background: #475569; color: #fff; text-align: center; font-weight: bold; padding: 3px; font-size: 8pt; }
+    .sign { height: 48px; }
+    .item-desc p { margin: 0 0 2px; }
+    .item-desc ul, .item-desc ol { margin: 2px 0 2px 14px; padding: 0; }
+    .item-desc li { margin: 0 0 1px; }
 </style>

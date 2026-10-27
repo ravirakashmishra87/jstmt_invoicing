@@ -57,21 +57,29 @@
         }
         .brand {
             display: flex;
-            gap: .75rem;
-            align-items: center;
-            padding: 1.1rem 1rem .9rem;
+            flex-direction: column;
+            gap: .35rem;
+            align-items: flex-start;
+            padding: .95rem .9rem .85rem;
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
-        .brand-mark {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            background: var(--steel-2);
-            color: #fff;
-            display: grid; place-items: center;
-            font-weight: 700;
-            font-family: Barlow, sans-serif;
+        .brand-logo {
+            display: block;
+            width: 100%;
+            max-width: 188px;
+            height: auto;
+            max-height: 72px;
+            object-fit: contain;
+            object-position: left center;
         }
-        .brand small { color: #93a9c0; display: block; font-size: .75rem; }
+        .brand small {
+            color: #93a9c0;
+            display: block;
+            font-size: .72rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding-left: .15rem;
+        }
         .side-label {
             padding: .9rem 1rem .25rem;
             font-size: .68rem;
@@ -470,6 +478,7 @@
         ['route' => 'suppliers.index', 'perm' => 'suppliers.view', 'icon' => 'truck', 'label' => 'Suppliers', 'match' => 'suppliers.*'],
         ['route' => 'products.index', 'perm' => 'products.view', 'icon' => 'gear-wide-connected', 'label' => 'Products', 'match' => 'products.*'],
         ['route' => 'quotations.index', 'perm' => 'quotations.view', 'icon' => 'file-earmark-text', 'label' => 'Quotations', 'match' => 'quotations.*'],
+        ['route' => 'proformas.index', 'perm' => 'proformas.view', 'icon' => 'file-earmark-ruled', 'label' => 'Proforma', 'match' => 'proformas.*'],
         ['route' => 'invoices.index', 'perm' => 'invoices.view', 'icon' => 'receipt', 'label' => 'Invoices', 'match' => 'invoices.*'],
         ['route' => 'stock.index', 'perm' => 'stock.view', 'icon' => 'box-seam', 'label' => 'Stock', 'match' => 'stock.*'],
         ['route' => 'receipts.index', 'perm' => 'receipts.view', 'icon' => 'cash-coin', 'label' => 'Receipts', 'match' => 'receipts.*'],
@@ -485,11 +494,13 @@
 <div class="app-shell" id="appShell">
     <aside class="sidebar" id="sidebar" aria-label="Main navigation">
         <div class="brand">
-            <div class="brand-mark">JST</div>
-            <div>
-                <div class="brand-word">{{ $company->trade_name ?? $company->name ?? 'JST Machine Tools' }}</div>
-                <small>Invoicing</small>
-            </div>
+            <img
+                class="brand-logo"
+                src="{{ asset('images/jst-logo.png') }}"
+                alt="{{ $company->trade_name ?? $company->name ?? 'JST Machine Tools' }}"
+                width="376"
+                height="164"
+            >
         </div>
         <div class="side-label">Operations</div>
         @foreach($navMain as $item)

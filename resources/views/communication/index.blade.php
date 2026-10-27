@@ -7,7 +7,7 @@
 <div class="list-hero">
     <div class="kicker">Client outreach</div>
     <h1>Communication</h1>
-    <p>Send quotations, invoices, receipts, or general messages to clients with professional email templates and PDF attachments.</p>
+    <p>Send quotations, proforma invoices, tax invoices, receipts, or general messages to clients with professional email templates and PDF attachments.</p>
 </div>
 
 @unless($smtpReady)
