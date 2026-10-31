@@ -61,6 +61,7 @@
         ? $quotation->quotation_date->diffInDays($quotation->valid_until)
         : ($seller->quotation_validity_days ?? 7);
     $city = $seller->city ?: 'Ahmedabad';
+    $showDiscount = $quotation->items->contains(fn ($item) => (float) $item->discount_percent > 0 || (float) $item->discount_amount > 0);
 @endphp
 
 <table class="header-bar">
@@ -156,16 +157,20 @@
 
 <div class="page-break"></div>
 
+@php $offerLabelColspan = $showDiscount ? 6 : 5; @endphp
 <div class="section-header">COMMERCIAL OFFER &amp; PRICE SCHEDULE</div>
 <table class="offer-table">
     <thead>
         <tr>
             <th width="6%">Sr. No.</th>
-            <th width="38%">Model / Description</th>
+            <th width="{{ $showDiscount ? '32%' : '38%' }}">Model / Description</th>
             <th width="12%">HSN/SAC</th>
-            <th width="12%">Qty</th>
-            <th width="16%">Rate (₹)</th>
-            <th width="16%">Amount (₹)</th>
+            <th width="10%">Qty</th>
+            <th width="{{ $showDiscount ? '12%' : '16%' }}">Rate (₹)</th>
+            @if($showDiscount)
+                <th width="10%">Disc %</th>
+            @endif
+            <th width="{{ $showDiscount ? '14%' : '16%' }}">Amount (₹)</th>
         </tr>
     </thead>
     <tbody>
@@ -182,6 +187,9 @@
                 <td class="center">{{ $item->hsn_sac }}</td>
                 <td class="center bold">{{ \App\Helpers\IndianFormat::number($item->quantity, 0) }} {{ $item->uom ?: 'NOS' }}</td>
                 <td class="right">{{ $money($item->rate) }}</td>
+                @if($showDiscount)
+                    <td class="right">{{ (float) $item->discount_percent > 0 ? \App\Helpers\IndianFormat::number($item->discount_percent, 2).'%' : '—' }}</td>
+                @endif
                 <td class="right bold">{{ $money($item->amount) }}</td>
             </tr>
         @endforeach
@@ -208,36 +216,37 @@
                 <td class="center">{{ $charge->hsn_sac ?: '—' }}</td>
                 <td class="center bold">{{ \App\Helpers\IndianFormat::number($chargeQty, 0) }} {{ $charge->uom ?: 'NOS' }}</td>
                 <td class="right">{{ $charge->is_at_actual ? '—' : $money($chargeRate) }}</td>
+                @if($showDiscount)<td class="right">—</td>@endif
                 <td class="right bold">{{ $charge->is_at_actual ? '—' : $money($charge->amount) }}</td>
             </tr>
         @endforeach
         <tr>
-            <td colspan="5" class="right bold">Taxable Value:</td>
+            <td colspan="{{ $offerLabelColspan }}" class="right bold">Taxable Value:</td>
             <td class="right bold">₹ {{ $money($quotation->taxable_amount) }}</td>
         </tr>
         @if($quotation->tax_type === 'igst')
             <tr>
-                <td colspan="5" class="right bold">Add: Integrated GST (IGST @ {{ $gstLabel }}%):</td>
+                <td colspan="{{ $offerLabelColspan }}" class="right bold">Add: Integrated GST (IGST @ {{ $gstLabel }}%):</td>
                 <td class="right bold">₹ {{ $money($quotation->igst_amount) }}</td>
             </tr>
         @else
             <tr>
-                <td colspan="5" class="right bold">Add: CGST @ {{ $halfGstLabel }}%:</td>
+                <td colspan="{{ $offerLabelColspan }}" class="right bold">Add: CGST @ {{ $halfGstLabel }}%:</td>
                 <td class="right bold">₹ {{ $money($quotation->cgst_amount) }}</td>
             </tr>
             <tr>
-                <td colspan="5" class="right bold">Add: SGST @ {{ $halfGstLabel }}%:</td>
+                <td colspan="{{ $offerLabelColspan }}" class="right bold">Add: SGST @ {{ $halfGstLabel }}%:</td>
                 <td class="right bold">₹ {{ $money($quotation->sgst_amount) }}</td>
             </tr>
         @endif
         @if(abs((float) $quotation->round_off) > 0)
             <tr>
-                <td colspan="5" class="right bold">Round Off:</td>
+                <td colspan="{{ $offerLabelColspan }}" class="right bold">Round Off:</td>
                 <td class="right bold">₹ {{ $money($quotation->round_off) }}</td>
             </tr>
         @endif
         <tr class="total-row grand">
-            <td colspan="5" class="right">Total Value (Ex-works {{ $city }}):</td>
+            <td colspan="{{ $offerLabelColspan }}" class="right">Total Value (Ex-works {{ $city }}):</td>
             <td class="right">₹ {{ $money($quotation->grand_total) }}</td>
         </tr>
     </tbody>

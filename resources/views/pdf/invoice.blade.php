@@ -20,6 +20,7 @@
     $seller = $company;
     $money = fn ($amount) => \App\Helpers\IndianFormat::number($amount);
     $date = fn ($value) => \App\Helpers\IndianFormat::date($value);
+    $showDiscount = $invoice->items->contains(fn ($item) => (float) $item->discount_percent > 0 || (float) $item->discount_amount > 0);
 @endphp
 @if($invoice->status === 'cancelled')<div class="flag">CANCELLED</div>@endif
 @if($invoice->status === 'draft')<div class="draft">DRAFT — NOT A TAX INVOICE</div>@endif
@@ -78,7 +79,9 @@
             <th width="8%" class="right">Qty</th>
             <th width="6%">UoM</th>
             <th width="12%" class="right">Rate</th>
-            <th width="8%" class="right">Disc</th>
+            @if($showDiscount)
+                <th width="8%" class="right">Disc %</th>
+            @endif
             <th width="12%" class="right">Taxable</th>
         </tr>
     </thead>
@@ -94,7 +97,9 @@
                 <td class="right">{{ \App\Helpers\IndianFormat::number($item->quantity, 2) }}</td>
                 <td class="center">{{ $item->uom }}</td>
                 <td class="right">{{ $money($item->rate) }}</td>
-                <td class="right">{{ $money($item->discount_amount) }}</td>
+                @if($showDiscount)
+                    <td class="right">{{ (float) $item->discount_percent > 0 ? \App\Helpers\IndianFormat::number($item->discount_percent, 2).'%' : '—' }}</td>
+                @endif
                 <td class="right">{{ $money($item->amount) }}</td>
             </tr>
         @endforeach
@@ -103,7 +108,8 @@
                 <td></td>
                 <td>{{ $charge->name }}</td>
                 <td class="center">{{ $charge->hsn_sac }}</td>
-                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td>
+                @if($showDiscount)<td></td>@endif
                 <td class="right">{{ $money($charge->amount) }}</td>
             </tr>
         @endforeach
