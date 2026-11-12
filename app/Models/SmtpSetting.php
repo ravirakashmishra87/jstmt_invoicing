@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Crypt;
 class SmtpSetting extends Model
 {
     protected $fillable = [
-        'host', 'port', 'encryption', 'username', 'password',
+        'mailer', 'host', 'port', 'encryption', 'username', 'password',
         'from_name', 'from_email', 'reply_to_email', 'is_active',
     ];
 
@@ -23,15 +23,26 @@ class SmtpSetting extends Model
     public static function current(): self
     {
         return static::query()->firstOrCreate([], [
-            'port' => 587,
-            'encryption' => 'tls',
+            'mailer' => 'sendmail',
+            'port' => 25,
+            'encryption' => 'none',
+            'from_name' => 'JST Machine Tools',
+            'from_email' => 'info@jstmachinetools.com',
+            'reply_to_email' => 'info@jstmachinetools.com',
             'is_active' => false,
         ]);
+    }
+
+    public function usesSendmail(): bool
+    {
+        return strtolower((string) ($this->mailer ?: 'smtp')) === 'sendmail';
     }
 
     public function setPasswordAttribute(?string $value): void
     {
         if ($value === null || $value === '') {
+            $this->attributes['password'] = null;
+
             return;
         }
 
@@ -54,9 +65,14 @@ class SmtpSetting extends Model
 
     public function isConfigured(): bool
     {
-        return $this->is_active
-            && filled($this->host)
-            && filled($this->from_email)
-            && (int) $this->port > 0;
+        if (! $this->is_active || blank($this->from_email)) {
+            return false;
+        }
+
+        if ($this->usesSendmail()) {
+            return true;
+        }
+
+        return filled($this->host) && (int) $this->port > 0;
     }
 }

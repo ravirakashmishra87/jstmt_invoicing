@@ -36,9 +36,10 @@ class SettingController extends Controller
     public function updateSmtp(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'host' => ['nullable', 'string', 'max:255'],
-            'port' => ['required', 'integer', 'min:1', 'max:65535'],
-            'encryption' => ['required', 'in:tls,ssl,none'],
+            'mailer' => ['required', 'in:smtp,sendmail'],
+            'host' => ['nullable', 'string', 'max:255', 'required_if:mailer,smtp'],
+            'port' => ['nullable', 'integer', 'min:1', 'max:65535', 'required_if:mailer,smtp'],
+            'encryption' => ['nullable', 'in:tls,ssl,none', 'required_if:mailer,smtp'],
             'username' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'max:255'],
             'from_name' => ['nullable', 'string', 'max:255'],
@@ -47,22 +48,30 @@ class SettingController extends Controller
         ]);
 
         $smtp = SmtpSetting::current();
+        $isSendmail = ($data['mailer'] ?? 'smtp') === 'sendmail';
         $payload = [
-            'host' => $data['host'] ?? null,
-            'port' => $data['port'],
-            'encryption' => $data['encryption'] === 'none' ? 'none' : $data['encryption'],
-            'username' => $data['username'] ?? null,
+            'mailer' => $data['mailer'],
+            'host' => $isSendmail ? null : ($data['host'] ?? null),
+            'port' => $isSendmail ? 25 : (int) $data['port'],
+            'encryption' => $isSendmail ? 'none' : (($data['encryption'] ?? 'tls') === 'none' ? 'none' : $data['encryption']),
+            'username' => $isSendmail ? null : ($data['username'] ?? null),
             'from_name' => $data['from_name'] ?? null,
             'from_email' => $data['from_email'] ?? null,
             'reply_to_email' => $data['reply_to_email'] ?? null,
             'is_active' => $request->boolean('is_active'),
         ];
 
-        if (! empty($data['password'])) {
+        if (! $isSendmail && ! empty($data['password'])) {
             $payload['password'] = $data['password'];
         }
 
         $smtp->fill($payload);
+
+        // GoDaddy sendmail / unauthenticated relay — drop any previously stored App Password.
+        if ($isSendmail || ($data['encryption'] ?? '') === 'none' || blank($data['username'] ?? null)) {
+            $smtp->forceFill(['password' => null]);
+        }
+
         $smtp->save();
 
         return redirect()->route('settings.index', ['tab' => 'email'])->with('success', 'SMTP settings saved.');

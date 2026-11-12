@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\DefaultEmailTemplates;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -42,19 +43,19 @@ return new class extends Migration
 
         DB::table('smtp_settings')->insert([
             'host' => null,
-            'port' => 587,
-            'encryption' => 'tls',
+            'port' => 25,
+            'encryption' => 'none',
             'username' => null,
             'password' => null,
             'from_name' => 'JST Machine Tools',
-            'from_email' => null,
-            'reply_to_email' => null,
+            'from_email' => 'info@jstmachinetools.com',
+            'reply_to_email' => 'info@jstmachinetools.com',
             'is_active' => false,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        foreach (\App\Support\DefaultEmailTemplates::catalog() as $template) {
+        foreach (DefaultEmailTemplates::catalog() as $template) {
             DB::table('email_templates')->insert([
                 ...$template,
                 'is_active' => true,

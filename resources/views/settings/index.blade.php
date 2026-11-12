@@ -192,20 +192,34 @@
         <h1>SMTP settings</h1>
         <p>Configure the mail server used by Communication to send quotations, invoices, receipts, and general messages.</p>
     </div>
+    <div class="alert alert-warning">
+        <strong>GoDaddy shared hosting:</strong> outbound SMTP to Gmail and often even <code>relay-hosting.secureserver.net</code> is blocked.
+        Use mailer <strong>Sendmail (GoDaddy)</strong>, set From / Reply-to to <code>info@jstmachinetools.com</code>, activate, and save.
+        Fallback SMTP: host <code>127.0.0.1</code>, port <code>25</code>, encryption <code>None</code>, blank username/password.
+    </div>
     <div class="card"><div class="card-body">
         <form method="POST" action="{{ route('settings.smtp') }}">
             @csrf @method('PUT')
             <div class="row g-3">
                 <div class="col-md-6">
+                    <label class="form-label">Mailer</label>
+                    <select name="mailer" class="form-select" id="smtp_mailer">
+                        @foreach(['sendmail' => 'Sendmail (GoDaddy recommended)', 'smtp' => 'SMTP'] as $value => $label)
+                            <option value="{{ $value }}" @selected(old('mailer', $smtp->mailer ?: 'smtp') === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    <div class="form-text">Choose Sendmail when SMTP hosts time out on shared hosting.</div>
+                </div>
+                <div class="col-md-6 smtp-only">
                     <label class="form-label">SMTP host</label>
-                    <input name="host" class="form-control" placeholder="smtp.gmail.com" value="{{ old('host', $smtp->host) }}">
-                    <div class="form-text">Gmail: <code>smtp.gmail.com</code> (not smtp.google.com). Use an App Password with 2FA enabled.</div>
+                    <input name="host" class="form-control" placeholder="127.0.0.1" value="{{ old('host', $smtp->host) }}">
+                    <div class="form-text">Prefer <code>127.0.0.1</code> / <code>localhost</code>. Avoid <code>relay-hosting.secureserver.net</code> if it times out.</div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 smtp-only">
                     <label class="form-label">Port</label>
-                    <input type="number" name="port" class="form-control" value="{{ old('port', $smtp->port ?: 587) }}" required>
+                    <input type="number" name="port" class="form-control" value="{{ old('port', $smtp->port ?: 25) }}">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 smtp-only">
                     <label class="form-label">Encryption</label>
                     <select name="encryption" class="form-select">
                         @foreach(['tls' => 'TLS', 'ssl' => 'SSL', 'none' => 'None'] as $value => $label)
@@ -213,39 +227,60 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 smtp-only">
                     <label class="form-label">Username</label>
-                    <input name="username" class="form-control" autocomplete="off" value="{{ old('username', $smtp->username) }}">
+                    <input name="username" class="form-control" autocomplete="off" value="{{ old('username', $smtp->username) }}" placeholder="Leave blank for GoDaddy relay">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 smtp-only">
                     <label class="form-label">Password</label>
                     <input type="password" name="password" class="form-control" autocomplete="new-password" placeholder="{{ $smtp->password ? 'Leave blank to keep current password' : '' }}">
-                    <div class="form-text">Stored encrypted. Leave blank if you do not want to change it.</div>
+                    <div class="form-text">Stored encrypted. Leave blank to keep. Cleared automatically when username is empty or encryption is None.</div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">From name</label>
-                    <input name="from_name" class="form-control" value="{{ old('from_name', $smtp->from_name) }}">
+                    <input name="from_name" class="form-control" placeholder="JST Machine Tools" value="{{ old('from_name', $smtp->from_name) }}">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">From email</label>
-                    <input type="email" name="from_email" class="form-control" value="{{ old('from_email', $smtp->from_email) }}">
+                    <input type="email" name="from_email" class="form-control" placeholder="info@jstmachinetools.com" value="{{ old('from_email', $smtp->from_email) }}">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Reply-to email</label>
-                    <input type="email" name="reply_to_email" class="form-control" value="{{ old('reply_to_email', $smtp->reply_to_email) }}">
+                    <input type="email" name="reply_to_email" class="form-control" placeholder="info@jstmachinetools.com" value="{{ old('reply_to_email', $smtp->reply_to_email) }}">
                 </div>
                 <div class="col-12">
                     <input type="hidden" name="is_active" value="0">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="is_active" value="1" id="smtp_active" @checked(old('is_active', $smtp->is_active ? '1' : '0') === '1')>
-                        <label class="form-check-label" for="smtp_active">Activate SMTP for outbound email</label>
+                        <label class="form-check-label" for="smtp_active">Activate for outbound email</label>
                     </div>
                 </div>
             </div>
             @if(auth()->user()->hasPermission('settings.edit'))
-                <button class="btn btn-primary mt-3" type="submit"><i class="bi bi-check2-circle"></i> Save SMTP settings</button>
+                <button class="btn btn-primary mt-3" type="submit"><i class="bi bi-check2-circle"></i> Save email settings</button>
             @endif
         </form>
     </div></div>
+    <script>
+        (function () {
+            const mailer = document.getElementById('smtp_mailer');
+            if (!mailer) return;
+            const sync = () => {
+                const smtp = mailer.value === 'smtp';
+                document.querySelectorAll('.smtp-only').forEach((el) => {
+                    el.classList.toggle('d-none', !smtp);
+                    el.querySelectorAll('input, select').forEach((input) => {
+                        if (smtp) {
+                            input.removeAttribute('disabled');
+                        } else {
+                            input.setAttribute('disabled', 'disabled');
+                        }
+                    });
+                });
+            };
+            mailer.addEventListener('change', sync);
+            sync();
+        })();
+    </script>
 @endif
 @endsection

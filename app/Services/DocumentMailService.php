@@ -26,7 +26,23 @@ class DocumentMailService
         $smtp ??= SmtpSetting::current();
 
         if (! $smtp->isConfigured()) {
-            throw new RuntimeException('SMTP is not configured. Add host, from email, and activate it under Settings → Email.');
+            throw new RuntimeException('SMTP is not configured. Add from email, activate it under Settings → Email, and choose Sendmail (GoDaddy) or a reachable SMTP host.');
+        }
+
+        Config::set('mail.from.address', $smtp->from_email);
+        Config::set('mail.from.name', $smtp->from_name ?: ($smtp->from_email ?? 'JST'));
+
+        if ($smtp->usesSendmail()) {
+            // GoDaddy recommended path when outbound TCP SMTP (incl. relay host) is blocked.
+            Config::set('mail.default', 'sendmail');
+            Config::set('mail.mailers.sendmail.transport', 'sendmail');
+            Config::set('mail.mailers.sendmail.path', '/usr/sbin/sendmail -t -i');
+
+            if (app()->bound('mail.manager')) {
+                app('mail.manager')->purge('sendmail');
+            }
+
+            return $smtp;
         }
 
         $host = trim((string) $smtp->host);
@@ -38,24 +54,32 @@ class DocumentMailService
 
         $this->assertSmtpReachable($host, $port);
 
-        // Port drives the wire scheme: 465 = implicit TLS (smtps), 587/25 = plain then STARTTLS.
-        $scheme = ($port === 465 || $smtp->encryption === 'ssl') ? 'smtps' : 'smtp';
-        if ($port === 587 && $smtp->encryption === 'ssl') {
+        $encryption = strtolower((string) ($smtp->encryption ?: 'tls'));
+        if ($port === 587 && $encryption === 'ssl') {
             throw new RuntimeException('Port 587 requires TLS (STARTTLS), not SSL. Use encryption TLS with smtp.gmail.com, or SSL with port 465.');
         }
+
+        // none = plain SMTP (local relay), ssl/465 = implicit TLS, otherwise STARTTLS-capable smtp.
+        $scheme = match (true) {
+            $encryption === 'none' => 'smtp',
+            $port === 465 || $encryption === 'ssl' => 'smtps',
+            default => 'smtp',
+        };
+
+        $username = filled($smtp->username) ? $smtp->username : null;
+        $password = filled($smtp->plainPassword()) ? $smtp->plainPassword() : null;
 
         Config::set('mail.default', 'smtp');
         Config::set('mail.mailers.smtp.transport', 'smtp');
         Config::set('mail.mailers.smtp.host', $host);
         Config::set('mail.mailers.smtp.port', $port);
-        Config::set('mail.mailers.smtp.username', $smtp->username);
-        Config::set('mail.mailers.smtp.password', $smtp->plainPassword());
-        Config::set('mail.mailers.smtp.timeout', 8);
+        Config::set('mail.mailers.smtp.username', $username);
+        Config::set('mail.mailers.smtp.password', $password);
+        Config::set('mail.mailers.smtp.timeout', 15);
         Config::set('mail.mailers.smtp.scheme', $scheme);
-        Config::set('mail.from.address', $smtp->from_email);
-        Config::set('mail.from.name', $smtp->from_name ?: ($smtp->from_email ?? 'JST'));
+        // Prevent STARTTLS upgrade on localhost/GoDaddy relay (cert/host mismatch / hang).
+        Config::set('mail.mailers.smtp.auto_tls', $encryption !== 'none');
 
-        // Force a fresh transport with the settings above.
         if (app()->bound('mail.manager')) {
             app('mail.manager')->purge('smtp');
         }
@@ -80,9 +104,17 @@ class DocumentMailService
             return;
         }
 
+        $lowerHost = strtolower($host);
         $hint = 'Check host/port, firewall, and that outbound SMTP is allowed.';
-        if (str_contains(strtolower($host), 'gmail') || str_contains(strtolower($host), 'google')) {
-            $hint = 'For Gmail use host smtp.gmail.com, port 587, encryption TLS, and a Google App Password (not your normal Gmail password).';
+
+        if (
+            str_contains($lowerHost, 'gmail')
+            || str_contains($lowerHost, 'google')
+            || str_contains($lowerHost, 'secureserver')
+            || str_contains($lowerHost, 'relay-hosting')
+            || in_array($lowerHost, ['localhost', '127.0.0.1'], true)
+        ) {
+            $hint = 'GoDaddy shared hosting often blocks outbound SMTP (including relay-hosting.secureserver.net). In Settings → Email set Mailer to Sendmail (GoDaddy), From to info@jstmachinetools.com, leave SMTP host blank, activate, and save. Or try host 127.0.0.1 port 25 encryption None with blank username/password.';
         }
 
         throw new RuntimeException(
@@ -260,7 +292,8 @@ class DocumentMailService
                 footerNote: $company?->footer_text,
             );
 
-            $pending = Mail::mailer('smtp')->to($payload['to']);
+            $mailerName = $smtp->usesSendmail() ? 'sendmail' : 'smtp';
+            $pending = Mail::mailer($mailerName)->to($payload['to']);
             if (! empty($payload['cc'])) {
                 $pending->cc($payload['cc']);
             }
@@ -283,6 +316,7 @@ class DocumentMailService
             }
             if (app()->bound('mail.manager')) {
                 app('mail.manager')->purge('smtp');
+                app('mail.manager')->purge('sendmail');
             }
         }
 

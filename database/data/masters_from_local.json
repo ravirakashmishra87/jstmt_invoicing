@@ -1,0 +1,747 @@
+{
+    "states": [
+        {
+            "id": 1,
+            "name": "Jammu and Kashmir",
+            "code": "01",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:00",
+            "updated_at": "2026-10-25 16:37:00"
+        },
+        {
+            "id": 2,
+            "name": "Himachal Pradesh",
+            "code": "02",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 3,
+            "name": "Punjab",
+            "code": "03",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 4,
+            "name": "Chandigarh",
+            "code": "04",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 5,
+            "name": "Uttarakhand",
+            "code": "05",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 6,
+            "name": "Haryana",
+            "code": "06",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 7,
+            "name": "Delhi",
+            "code": "07",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 8,
+            "name": "Rajasthan",
+            "code": "08",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 9,
+            "name": "Uttar Pradesh",
+            "code": "09",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 10,
+            "name": "Bihar",
+            "code": "10",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 11,
+            "name": "Sikkim",
+            "code": "11",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 12,
+            "name": "Arunachal Pradesh",
+            "code": "12",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 13,
+            "name": "Nagaland",
+            "code": "13",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 14,
+            "name": "Manipur",
+            "code": "14",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 15,
+            "name": "Mizoram",
+            "code": "15",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 16,
+            "name": "Tripura",
+            "code": "16",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 17,
+            "name": "Meghalaya",
+            "code": "17",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 18,
+            "name": "Assam",
+            "code": "18",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 19,
+            "name": "West Bengal",
+            "code": "19",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 20,
+            "name": "Jharkhand",
+            "code": "20",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 21,
+            "name": "Odisha",
+            "code": "21",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 22,
+            "name": "Chhattisgarh",
+            "code": "22",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 23,
+            "name": "Madhya Pradesh",
+            "code": "23",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 24,
+            "name": "Gujarat",
+            "code": "24",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 25,
+            "name": "Daman and Diu",
+            "code": "25",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 26,
+            "name": "Dadra and Nagar Haveli and Daman and Diu",
+            "code": "26",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 27,
+            "name": "Maharashtra",
+            "code": "27",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 28,
+            "name": "Andhra Pradesh (Old)",
+            "code": "28",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 29,
+            "name": "Karnataka",
+            "code": "29",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 30,
+            "name": "Goa",
+            "code": "30",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 31,
+            "name": "Lakshadweep",
+            "code": "31",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 32,
+            "name": "Kerala",
+            "code": "32",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 33,
+            "name": "Tamil Nadu",
+            "code": "33",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 34,
+            "name": "Puducherry",
+            "code": "34",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 35,
+            "name": "Andaman and Nicobar Islands",
+            "code": "35",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 36,
+            "name": "Telangana",
+            "code": "36",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 37,
+            "name": "Andhra Pradesh",
+            "code": "37",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 38,
+            "name": "Ladakh",
+            "code": "38",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        },
+        {
+            "id": 39,
+            "name": "Other Territory",
+            "code": "97",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:01",
+            "updated_at": "2026-10-25 16:37:01"
+        }
+    ],
+    "tax_rates": [
+        {
+            "id": 1,
+            "name": "GST 0%",
+            "rate": "0.00",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 2,
+            "name": "GST 5%",
+            "rate": "5.00",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 3,
+            "name": "GST 12%",
+            "rate": "12.00",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 4,
+            "name": "GST 18%",
+            "rate": "18.00",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 5,
+            "name": "GST 28%",
+            "rate": "28.00",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "uoms": [
+        {
+            "id": 1,
+            "name": "Numbers",
+            "code": "NOS",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 2,
+            "name": "Set",
+            "code": "SET",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 3,
+            "name": "Kilogram",
+            "code": "KG",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 4,
+            "name": "Metre",
+            "code": "MTR",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "payment_terms": [
+        {
+            "id": 1,
+            "name": "100% Advance",
+            "advance_percent": "100.00",
+            "balance_percent": "0.00",
+            "due_days": 0,
+            "milestone": null,
+            "description": "Full payment before dispatch",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 2,
+            "name": "Net 30",
+            "advance_percent": "0.00",
+            "balance_percent": "100.00",
+            "due_days": 30,
+            "milestone": null,
+            "description": "Payment due in 30 days",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 3,
+            "name": "30% advance 70% after dispatch",
+            "advance_percent": "30.00",
+            "balance_percent": "70.00",
+            "due_days": 10,
+            "milestone": null,
+            "description": null,
+            "is_active": 1,
+            "created_at": "2026-10-26 10:13:00",
+            "updated_at": "2026-10-26 10:13:00"
+        }
+    ],
+    "payment_modes": [
+        {
+            "id": 1,
+            "name": "NEFT",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 2,
+            "name": "RTGS",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 3,
+            "name": "UPI",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 4,
+            "name": "Cheque",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 5,
+            "name": "Cash",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "brands": [
+        {
+            "id": 1,
+            "name": "JST",
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "product_categories": [
+        {
+            "id": 1,
+            "parent_id": null,
+            "name": "Cutting Machines",
+            "slug": "cutting-machines",
+            "sort_order": 1,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "hsn_sac_codes": [
+        {
+            "id": 1,
+            "code": "84615011",
+            "description": "Machine tools for sawing metal",
+            "type": "HSN",
+            "tax_rate_id": 4,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 2,
+            "code": "998898",
+            "description": "Other manufacturing services",
+            "type": "SAC",
+            "tax_rate_id": 4,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "charge_types": [
+        {
+            "id": 1,
+            "name": "Freight",
+            "code": "FREIGHT",
+            "hsn_sac_id": 2,
+            "tax_rate_id": 4,
+            "is_taxable": 1,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 2,
+            "name": "Packing",
+            "code": "PACKING",
+            "hsn_sac_id": null,
+            "tax_rate_id": 4,
+            "is_taxable": 1,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 3,
+            "name": "Insurance",
+            "code": "INSURANCE",
+            "hsn_sac_id": null,
+            "tax_rate_id": 4,
+            "is_taxable": 1,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        },
+        {
+            "id": 4,
+            "name": "Bi-Metal Band saw Blade (3000x27x1.1 mm)",
+            "code": "BI-METAL",
+            "hsn_sac_id": null,
+            "tax_rate_id": null,
+            "is_taxable": 1,
+            "is_active": 1,
+            "created_at": "2026-10-26 10:19:36",
+            "updated_at": "2026-10-26 10:21:47"
+        },
+        {
+            "id": 5,
+            "name": "ROLLER TABLE",
+            "code": "ROLLER TABLE",
+            "hsn_sac_id": null,
+            "tax_rate_id": null,
+            "is_taxable": 1,
+            "is_active": 1,
+            "created_at": "2026-10-26 10:19:57",
+            "updated_at": "2026-10-26 10:19:57"
+        }
+    ],
+    "warehouses": [
+        {
+            "id": 1,
+            "name": "Main Store",
+            "code": "MAIN",
+            "address": "GIDC Metoda, Rajkot, Gujarat 360021",
+            "is_default": 1,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "bank_accounts": [
+        {
+            "id": 1,
+            "account_holder": "JST Machine Tools",
+            "bank_name": "State Bank of India",
+            "branch": "Metoda, Rajkot",
+            "account_number": "12345678901",
+            "ifsc": "SBIN0001234",
+            "is_default": 0,
+            "is_active": 0,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-26 04:17:00",
+            "deleted_at": null
+        },
+        {
+            "id": 2,
+            "account_holder": "JST Machine Tools",
+            "bank_name": "HDFC Bank",
+            "branch": "Virar west",
+            "account_number": "9876543210123",
+            "ifsc": "HDFC000112",
+            "is_default": 1,
+            "is_active": 1,
+            "created_at": "2026-10-26 04:16:42",
+            "updated_at": "2026-10-26 04:16:42",
+            "deleted_at": null
+        }
+    ],
+    "financial_years": [
+        {
+            "id": 1,
+            "name": "2026-2027",
+            "start_date": "2026-04-01",
+            "end_date": "2027-03-31",
+            "is_current": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "number_series": [
+        {
+            "id": 1,
+            "document_type": "quotation",
+            "prefix": "",
+            "suffix": "",
+            "separator": "-",
+            "format_pattern": "{MODELCODE}{SEQ}-{YEAR}",
+            "starting_number": 1,
+            "current_number": 2,
+            "zero_padding": 3,
+            "reset_rule": "calendar_year",
+            "last_reset_key": "2026",
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-26 06:57:40"
+        },
+        {
+            "id": 2,
+            "document_type": "invoice",
+            "prefix": "",
+            "suffix": "",
+            "separator": "\/",
+            "format_pattern": "{FY}\/{SEQ}",
+            "starting_number": 1,
+            "current_number": 1,
+            "zero_padding": 3,
+            "reset_rule": "financial_year",
+            "last_reset_key": "2026-2027",
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-26 04:19:34"
+        },
+        {
+            "id": 3,
+            "document_type": "receipt",
+            "prefix": "RCT",
+            "suffix": "",
+            "separator": "\/",
+            "format_pattern": "RCT\/{FY}\/{SEQ}",
+            "starting_number": 1,
+            "current_number": 2,
+            "zero_padding": 3,
+            "reset_rule": "financial_year",
+            "last_reset_key": "2026-2027",
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-26 13:02:12"
+        },
+        {
+            "id": 4,
+            "document_type": "stock_adjustment",
+            "prefix": "ADJ",
+            "suffix": "",
+            "separator": "\/",
+            "format_pattern": "ADJ\/{FY}\/{SEQ}",
+            "starting_number": 1,
+            "current_number": 2,
+            "zero_padding": 3,
+            "reset_rule": "financial_year",
+            "last_reset_key": "2026-2027",
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-26 06:55:40"
+        },
+        {
+            "id": 5,
+            "document_type": "proforma",
+            "prefix": "",
+            "suffix": "",
+            "separator": "\/",
+            "format_pattern": "PI\/{FY}\/{SEQ}",
+            "starting_number": 1,
+            "current_number": 1,
+            "zero_padding": 3,
+            "reset_rule": "financial_year",
+            "last_reset_key": "2026-2027",
+            "created_at": "2026-10-27 14:24:03",
+            "updated_at": "2026-10-27 14:48:33"
+        }
+    ],
+    "terms_templates": [
+        {
+            "id": 1,
+            "name": "Standard machine quotation",
+            "document_type": "quotation",
+            "content": "Payment: 100% Advance along with confirmed Purchase Order.\nPrices: Ex-works Ahmedabad. Unloading at your site in your scope.\nDelivery: Within 4 to 6 weeks from the date of technically and commercially clear order with advance payment.\nTaxes: GST @ 18% extra as applicable at the time of dispatch.\nPacking & Forwarding: Standard wooden packing included \/ extra at actuals.\nTransport & Insurance: Transit insurance and freight to your account. Insurance approx 0.3% of invoice value.\nCommissioning & Trial: Erection & commissioning engineer charges extra per day plus travel\/boarding at actuals.\nWarranty: 12 months from the date of commissioning or 15 months from the date of dispatch, whichever is earlier, against manufacturing defects.\nValidity: This quotation is valid for 7 days from the date hereof.",
+            "is_default": 1,
+            "is_active": 1,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-25 16:37:02"
+        }
+    ],
+    "company_profile": [
+        {
+            "id": 1,
+            "name": "JST Machine Tools",
+            "trade_name": "JST Machine Tools",
+            "address_line1": "Plot No. 42, GIDC Industrial Estate, Phase-II",
+            "address_line2": "Vasai-Virar",
+            "city": "Virar",
+            "district": "Palghar",
+            "state_id": 27,
+            "state_code": "27",
+            "pin": "400303",
+            "country": "India",
+            "gstin": "24AAAAA0000A1Z5",
+            "pan": "AAAAA0000A",
+            "udyam_no": null,
+            "phone": "0281-2560000",
+            "email": "accounts@jstmt.com",
+            "website": "www.jstmachinetools.com",
+            "logo_path": null,
+            "brand_logo_path": null,
+            "signature_path": null,
+            "stamp_path": null,
+            "declaration": "We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.",
+            "jurisdiction": "Palghar",
+            "footer_text": "Subject to Palghar Mumbaijurisdiction. E. & O.E.",
+            "quotation_validity_days": 7,
+            "stock_valuation": "weighted_average",
+            "prevent_negative_stock": 1,
+            "credit_limit_hard_block": 0,
+            "overdue_interest_enabled": 0,
+            "overdue_interest_rate": "24.00",
+            "eway_bill_threshold": "500000.00",
+            "round_off_rule": "nearest",
+            "books_locked_upto": null,
+            "created_at": "2026-10-25 16:37:02",
+            "updated_at": "2026-10-26 13:22:59"
+        }
+    ],
+    "transporters": []
+}
