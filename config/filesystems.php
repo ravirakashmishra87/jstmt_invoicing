@@ -40,7 +40,9 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // Write directly under public/storage so GoDaddy (and hosts without
+            // symlink support) can serve /storage/... without `php artisan storage:link`.
+            'root' => public_path('storage'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
@@ -74,6 +76,8 @@ return [
     */
 
     'links' => [
+        // Kept for local/dev convenience when someone still runs storage:link.
+        // Production GoDaddy uses public/storage as the real disk root above.
         public_path('storage') => storage_path('app/public'),
     ],
 

@@ -94,9 +94,7 @@ class Product extends Model
             return null;
         }
 
-        $absolute = storage_path('app/public/'.$image->path);
-
-        return is_file($absolute) ? $absolute : null;
+        return $image->absolutePath();
     }
 
     public function serials(): HasMany

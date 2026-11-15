@@ -9,6 +9,11 @@
 </ul>
 
 @if($tab === 'company')
+<div class="list-hero mb-3">
+        <div class="kicker">Company Information</div>
+        <h1>Company settings</h1>
+        <p>Company information that can be used for legal purpose</p>
+    </div>
     <div class="card"><div class="card-body">
         <form method="POST" action="{{ route('settings.company') }}">
             @csrf @method('PUT')
@@ -66,6 +71,11 @@
 @endif
 
 @if($tab === 'banks')
+    <div class="list-hero mb-3">
+        <div class="kicker">Bank Information</div>
+        <h1>Bank Account details</h1>
+        <p>Manage multiple bank account. Active one will be used on Invoice.</p>
+    </div>
     <div class="card mb-3"><div class="card-body">
         <h2 class="h6">Add bank account</h2>
         <form method="POST" action="{{ route('settings.banks.store') }}" class="row g-2">
@@ -192,11 +202,7 @@
         <h1>SMTP settings</h1>
         <p>Configure the mail server used by Communication to send quotations, invoices, receipts, and general messages.</p>
     </div>
-    <div class="alert alert-warning">
-        <strong>GoDaddy shared hosting:</strong> outbound SMTP to Gmail and often even <code>relay-hosting.secureserver.net</code> is blocked.
-        Use mailer <strong>Sendmail (GoDaddy)</strong>, set From / Reply-to to <code>info@jstmachinetools.com</code>, activate, and save.
-        Fallback SMTP: host <code>127.0.0.1</code>, port <code>25</code>, encryption <code>None</code>, blank username/password.
-    </div>
+    
     <div class="card"><div class="card-body">
         <form method="POST" action="{{ route('settings.smtp') }}">
             @csrf @method('PUT')

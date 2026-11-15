@@ -18,8 +18,17 @@ class ProductImage extends Model
     protected static function booted(): void
     {
         static::deleting(function (self $image): void {
-            if ($image->path && Storage::disk('public')->exists($image->path)) {
+            if (! $image->path) {
+                return;
+            }
+
+            if (Storage::disk('public')->exists($image->path)) {
                 Storage::disk('public')->delete($image->path);
+            }
+
+            $legacy = storage_path('app/public/'.$image->path);
+            if (is_file($legacy)) {
+                @unlink($legacy);
             }
         });
     }
@@ -36,8 +45,14 @@ class ProductImage extends Model
 
     public function absolutePath(): ?string
     {
-        $absolute = storage_path('app/public/'.$this->path);
+        $absolute = Storage::disk('public')->path($this->path);
+        if (is_file($absolute)) {
+            return $absolute;
+        }
 
-        return is_file($absolute) ? $absolute : null;
+        // Legacy path used before public disk root moved to public/storage.
+        $legacy = storage_path('app/public/'.$this->path);
+
+        return is_file($legacy) ? $legacy : null;
     }
 }
